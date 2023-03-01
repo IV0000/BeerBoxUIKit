@@ -1,5 +1,5 @@
 //
-//  Colors.swift
+//  Palette.swift
 //  BeerBoxUIKit
 //
 //  Created by Ivan Voloshchuk on 28/02/23.
@@ -18,8 +18,6 @@ class Palette {
     static let bannerColor = UIColor(hex: 0xF1B24E)
     
 }
-
-
 
 extension UIColor {
    convenience init(red: Int, green: Int, blue: Int) {
