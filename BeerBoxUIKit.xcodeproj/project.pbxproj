@@ -15,10 +15,11 @@
 		FF0D3E9029AE464800B85A09 /* Beer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E8F29AE464800B85A09 /* Beer.swift */; };
 		FF0D3E9229AF33B500B85A09 /* Webservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E9129AF33B500B85A09 /* Webservice.swift */; };
 		FF0D3E9429AF34AD00B85A09 /* BeerListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E9329AF34AD00B85A09 /* BeerListViewModel.swift */; };
-		FF0D3E9629AF365C00B85A09 /* BeersListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E9529AF365C00B85A09 /* BeersListViewController.swift */; };
+		FF0D3E9629AF365C00B85A09 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E9529AF365C00B85A09 /* MainViewController.swift */; };
 		FF0D3E9D29AF395C00B85A09 /* BeerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E9C29AF395C00B85A09 /* BeerCell.swift */; };
 		FF0D3E9F29AF508300B85A09 /* ExtensionUIImageUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E9E29AF508300B85A09 /* ExtensionUIImageUrl.swift */; };
 		FF0D3EA129AFA04600B85A09 /* BeerDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3EA029AFA04600B85A09 /* BeerDetailViewController.swift */; };
+		FF0D3EA329B092D300B85A09 /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3EA229B092D300B85A09 /* SearchResultViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,10 +33,11 @@
 		FF0D3E8F29AE464800B85A09 /* Beer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Beer.swift; sourceTree = "<group>"; };
 		FF0D3E9129AF33B500B85A09 /* Webservice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Webservice.swift; sourceTree = "<group>"; };
 		FF0D3E9329AF34AD00B85A09 /* BeerListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerListViewModel.swift; sourceTree = "<group>"; };
-		FF0D3E9529AF365C00B85A09 /* BeersListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeersListViewController.swift; sourceTree = "<group>"; };
+		FF0D3E9529AF365C00B85A09 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		FF0D3E9C29AF395C00B85A09 /* BeerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerCell.swift; sourceTree = "<group>"; };
 		FF0D3E9E29AF508300B85A09 /* ExtensionUIImageUrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionUIImageUrl.swift; sourceTree = "<group>"; };
 		FF0D3EA029AFA04600B85A09 /* BeerDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerDetailViewController.swift; sourceTree = "<group>"; };
+		FF0D3EA229B092D300B85A09 /* SearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,7 +104,8 @@
 		FF0D3E9929AF369F00B85A09 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				FF0D3E9529AF365C00B85A09 /* BeersListViewController.swift */,
+				FF0D3E9529AF365C00B85A09 /* MainViewController.swift */,
+				FF0D3EA229B092D300B85A09 /* SearchResultViewController.swift */,
 				FF0D3EA029AFA04600B85A09 /* BeerDetailViewController.swift */,
 				FF0D3E9C29AF395C00B85A09 /* BeerCell.swift */,
 			);
@@ -198,7 +201,8 @@
 				FF0D3E9429AF34AD00B85A09 /* BeerListViewModel.swift in Sources */,
 				FF0D3E9029AE464800B85A09 /* Beer.swift in Sources */,
 				FF0D3E9229AF33B500B85A09 /* Webservice.swift in Sources */,
-				FF0D3E9629AF365C00B85A09 /* BeersListViewController.swift in Sources */,
+				FF0D3EA329B092D300B85A09 /* SearchResultViewController.swift in Sources */,
+				FF0D3E9629AF365C00B85A09 /* MainViewController.swift in Sources */,
 				FF0D3E9F29AF508300B85A09 /* ExtensionUIImageUrl.swift in Sources */,
 				FF0D3EA129AFA04600B85A09 /* BeerDetailViewController.swift in Sources */,
 				FF0D3E8E29AE400A00B85A09 /* Palette.swift in Sources */,

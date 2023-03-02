@@ -8,6 +8,7 @@
 import Foundation
 
 // MARK: - Beer
+
 struct Beer: Codable {
     let id: Int
     let name, tagline, description: String

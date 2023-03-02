@@ -9,9 +9,8 @@ import Foundation
 import UIKit
 
 class BeerListViewModel {
-    
     private(set) var beers: Beers = []
-    
+
     func fetchBeers(url: URL) async {
         do {
             let beers = try await Webservice().getBeers(url: url)
@@ -22,9 +21,8 @@ class BeerListViewModel {
     }
 }
 
-
 // TODO: REMOVE
-//struct BeerViewModel {
+// struct BeerViewModel {
 //    private let beer: Beer
 //
 //    init(beer: Beer) {
@@ -45,6 +43,4 @@ class BeerListViewModel {
 //    var image: UIImage {
 //        UIImage(
 //    }
-//}
-
-
+// }
