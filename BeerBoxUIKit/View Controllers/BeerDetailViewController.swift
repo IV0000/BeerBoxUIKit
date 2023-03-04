@@ -14,127 +14,78 @@ class BeerDetailViewController: UIViewController {
     var descriptionDetail: String?
     var imageUrl: String?
 
-    lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = titleDetail
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = Palette.titleColor
-        label.font = .systemFont(ofSize: 20, weight: .bold)
-        label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.5
-        label.numberOfLines = 1
-        return label
-    }()
-
-    lazy var taglineLabel: UILabel = {
-        let label = UILabel()
-        label.text = taglineDetail
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = Palette.textColor
-        label.font = .systemFont(ofSize: 18)
-        label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.5
-        label.numberOfLines = 1
-        return label
-    }()
-
-    lazy var descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.text = descriptionDetail
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = Palette.textColor
-        label.font = .systemFont(ofSize: 16)
-        label.numberOfLines = 0
-        return label
-    }()
-
-    lazy var beerImage: UIImageView = {
-        let image = UIImageView()
-        if let imageUrl = imageUrl {
-            image.downloaded(from: imageUrl)
-        }
-        return image
-
-    }()
-
-    lazy var bookmarkImage: UIImageView = {
-        let bookmark = UIImageView()
-        bookmark.image = UIImage(systemName: "bookmark.fill")!.withTintColor(Palette.primaryColor, renderingMode: .alwaysOriginal)
-        return bookmark
-    }()
+    private let titleLabel = UILabel()
+    private let taglineLabel = UILabel()
+    private let descriptionLabel = UILabel()
+    private var bookmark = UIImageView()
+    private var beerImage = UIImageView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setConstraints()
+        setStyle()
+    }
+
+    func setStyle() {
         view.backgroundColor = Palette.backgroundColor
-        configureUI()
-        setupConstraints()
-    }
 
-    func configureUI() {
-        view.addSubview(titleLabel)
-        view.addSubview(descriptionLabel)
-        view.addSubview(taglineLabel)
-        view.addSubview(beerImage)
-        view.addSubview(bookmarkImage)
-//        view.sendSubviewToBack(blurredView)
-    }
+        titleLabel.text = titleDetail
+        titleLabel.textColor = Palette.titleColor
+        titleLabel.font = .systemFont(ofSize: 20, weight: .bold)
+        titleLabel.adjustsFontSizeToFitWidth = true
+        titleLabel.minimumScaleFactor = 0.5
+        titleLabel.numberOfLines = 1
 
-    func setupConstraints() {
-        bookmarkImage.translatesAutoresizingMaskIntoConstraints = false
-        bookmarkImage.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        bookmarkImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
-        bookmarkImage.widthAnchor.constraint(equalToConstant: 25).isActive = true
-        bookmarkImage.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        taglineLabel.text = taglineDetail
+        taglineLabel.textColor = Palette.textColor
+        taglineLabel.font = .systemFont(ofSize: 18)
+        taglineLabel.adjustsFontSizeToFitWidth = true
+        taglineLabel.minimumScaleFactor = 0.5
+        taglineLabel.numberOfLines = 1
 
-        beerImage.translatesAutoresizingMaskIntoConstraints = false
-        beerImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
-        beerImage.topAnchor.constraint(equalTo: view.topAnchor, constant: 25).isActive = true
-        beerImage.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.2).isActive = true
-        beerImage.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 0.35).isActive = true
+        descriptionLabel.text = descriptionDetail
+        descriptionLabel.textColor = Palette.textColor
+        descriptionLabel.font = .systemFont(ofSize: 16)
+        descriptionLabel.numberOfLines = 0
 
-        titleLabel.leadingAnchor.constraint(equalTo: beerImage.trailingAnchor, constant: 10).isActive = true
-        titleLabel.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.7).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: beerImage.topAnchor).isActive = true
+        let systemIcon = UIImage(systemName: "bookmark.fill")!
+        systemIcon.withTintColor(Palette.primaryColor, renderingMode: .alwaysOriginal)
+        bookmark.image = systemIcon
 
-        taglineLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
-        taglineLabel.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.7).isActive = true
-        taglineLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
-
-        descriptionLabel.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.7).isActive = true
-        descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
-        descriptionLabel.topAnchor.constraint(equalTo: taglineLabel.bottomAnchor, constant: 10).isActive = true
-    }
-}
-
-final class CustomVisualEffectView: UIVisualEffectView {
-    /// Create visual effect view with given effect and its intensity
-    ///
-    /// - Parameters:
-    ///   - effect: visual effect, eg UIBlurEffect(style: .dark)
-    ///   - intensity: custom intensity from 0.0 (no effect) to 1.0 (full effect) using linear scale
-    init(effect: UIVisualEffect, intensity: CGFloat) {
-        theEffect = effect
-        customIntensity = intensity
-        super.init(effect: nil)
-    }
-
-    required init?(coder _: NSCoder) { nil }
-
-    deinit {
-        animator?.stopAnimation(true)
-    }
-
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
-        effect = nil
-        animator?.stopAnimation(true)
-        animator = UIViewPropertyAnimator(duration: 1, curve: .linear) { [unowned self] in
-            self.effect = theEffect
+        if let imageUrl = imageUrl {
+            beerImage.downloaded(from: imageUrl)
         }
-        animator?.fractionComplete = customIntensity
     }
 
-    private let theEffect: UIVisualEffect
-    private let customIntensity: CGFloat
-    private var animator: UIViewPropertyAnimator?
+    func setConstraints() {
+        view.addConstrainedSubview(bookmark,
+                                   beerImage,
+                                   titleLabel,
+                                   taglineLabel,
+                                   descriptionLabel)
+
+        NSLayoutConstraint.activate([
+            bookmark.topAnchor.constraint(equalTo: view.topAnchor),
+            bookmark.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            bookmark.widthAnchor.constraint(equalToConstant: 25),
+            bookmark.heightAnchor.constraint(equalToConstant: 25),
+
+            beerImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            beerImage.topAnchor.constraint(equalTo: view.topAnchor, constant: 25),
+            beerImage.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.2),
+            beerImage.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 0.35),
+
+            titleLabel.leadingAnchor.constraint(equalTo: beerImage.trailingAnchor, constant: 10),
+            titleLabel.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.7),
+            titleLabel.topAnchor.constraint(equalTo: beerImage.topAnchor),
+
+            taglineLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            taglineLabel.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.7),
+            taglineLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
+
+            descriptionLabel.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.7),
+            descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            descriptionLabel.topAnchor.constraint(equalTo: taglineLabel.bottomAnchor, constant: 10),
+        ])
+    }
 }

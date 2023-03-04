@@ -10,43 +10,12 @@ import SwiftUI
 import UIKit
 
 class BeerCell: UITableViewCell {
-    var buttonPressed: (() -> Void) = {}
-    lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = Palette.titleColor
-        return label
-    }()
-
-    lazy var taglineLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = Palette.textColor
-        return label
-    }()
-
-    lazy var descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = Palette.textColor
-        label.numberOfLines = 2
-        return label
-    }()
-
-    lazy var moreInfoButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitleColor(Palette.primaryColor, for: .normal)
-        button.setTitleColor(Palette.primaryColor.withAlphaComponent(0.5), for: .highlighted)
-        button.titleLabel?.font = .systemFont(ofSize: 16)
-        button.addTarget(self, action: #selector(pressedAction(_:)), for: .touchUpInside)
-        return button
-    }()
-
-    lazy var beerImage: UIImageView = {
-        let image = UIImageView()
-        return image
-    }()
+    var showInfo: (() -> Void) = {}
+    private let titleLabel = UILabel()
+    private let taglineLabel = UILabel()
+    private let descriptionLabel = UILabel()
+    private let moreInfoButton = UIButton()
+    private let beerImage = UIImageView()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -58,47 +27,62 @@ class BeerCell: UITableViewCell {
     }
 
     @objc func pressedAction(_: UIButton) {
-        buttonPressed()
+        showInfo()
     }
 
     func configure(beer: Beer) {
-        titleLabel.text = beer.name
-        taglineLabel.text = beer.tagline
-        descriptionLabel.text = beer.description
-        moreInfoButton.setTitle("MORE INFO", for: .normal)
-        beerImage.downloaded(from: beer.imageURL, contentMode: .scaleToFill)
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(taglineLabel)
-        contentView.addSubview(descriptionLabel)
-        contentView.addSubview(moreInfoButton)
-        contentView.addSubview(beerImage)
-        contentView.backgroundColor = Palette.backgroundColor
+        setStyle(beer: beer)
         setConstraints()
     }
 
+    func setStyle(beer: Beer) {
+        contentView.backgroundColor = Palette.backgroundColor
+
+        titleLabel.text = beer.name
+        titleLabel.textColor = Palette.titleColor
+
+        taglineLabel.textColor = Palette.textColor
+        taglineLabel.text = beer.tagline
+
+        descriptionLabel.textColor = Palette.textColor
+        descriptionLabel.text = beer.description
+        descriptionLabel.numberOfLines = 2
+
+        moreInfoButton.setTitle("MORE INFO", for: .normal)
+        moreInfoButton.setTitleColor(Palette.primaryColor, for: .normal)
+        moreInfoButton.setTitleColor(Palette.primaryColor.withAlphaComponent(0.5), for: .highlighted)
+        moreInfoButton.titleLabel?.font = .systemFont(ofSize: 16)
+        moreInfoButton.addTarget(self, action: #selector(pressedAction(_:)), for: .touchUpInside)
+
+        beerImage.downloaded(from: beer.imageURL, contentMode: .scaleToFill)
+    }
+
     func setConstraints() {
-        beerImage.translatesAutoresizingMaskIntoConstraints = false
-        beerImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15).isActive = true
-        beerImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15).isActive = true
-        beerImage.widthAnchor.constraint(equalToConstant: 25).isActive = true
-        beerImage.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        addConstrainedSubview(beerImage,
+                              titleLabel,
+                              taglineLabel,
+                              descriptionLabel,
+                              moreInfoButton)
 
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.leadingAnchor.constraint(equalTo: beerImage.trailingAnchor, constant: 15).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5).isActive = true
+        NSLayoutConstraint.activate([
+            beerImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            beerImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
+            beerImage.widthAnchor.constraint(equalToConstant: 25),
+            beerImage.heightAnchor.constraint(equalToConstant: 100),
 
-        taglineLabel.translatesAutoresizingMaskIntoConstraints = false
-        taglineLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
-        taglineLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
+            titleLabel.leadingAnchor.constraint(equalTo: beerImage.trailingAnchor, constant: 15),
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
 
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
-        descriptionLabel.topAnchor.constraint(equalTo: taglineLabel.bottomAnchor, constant: 15).isActive = true
-        descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15).isActive = true
+            taglineLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            taglineLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
 
-        moreInfoButton.translatesAutoresizingMaskIntoConstraints = false
-        moreInfoButton.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
-        moreInfoButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: -5).isActive = true
+            descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            descriptionLabel.topAnchor.constraint(equalTo: taglineLabel.bottomAnchor, constant: 15),
+            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -15),
+
+            moreInfoButton.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            moreInfoButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: -5),
+        ])
     }
 }
 

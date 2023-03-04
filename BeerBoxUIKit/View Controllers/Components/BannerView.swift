@@ -15,7 +15,7 @@ class BannerView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        configure()
+        setStyle()
         setConstraints()
     }
 
@@ -24,7 +24,7 @@ class BannerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func configure() {
+    private func setStyle() {
         backgroundColor = Palette.bannerColor
         layer.cornerRadius = 12
 
@@ -42,13 +42,9 @@ class BannerView: UIView {
     }
 
     private func setConstraints() {
-        addSubview(bannerImage)
-        addSubview(bannerTitleLabel)
-        addSubview(bannerDescriptionLabel)
-
-        bannerTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        bannerDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        bannerImage.translatesAutoresizingMaskIntoConstraints = false
+        addConstrainedSubview(bannerImage,
+                              bannerTitleLabel,
+                              bannerDescriptionLabel)
 
         NSLayoutConstraint.activate([
             bannerTitleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 15),

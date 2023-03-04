@@ -281,7 +281,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
 
         let beer = beerViewModel.beers[indexPath.row]
         cell.configure(beer: beer)
-        cell.buttonPressed = { [weak self] in
+        cell.showInfo = { [weak self] in
             self?.presentBottomSheet(indexPath: indexPath)
         }
         return cell
