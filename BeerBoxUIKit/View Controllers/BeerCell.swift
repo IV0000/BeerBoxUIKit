@@ -57,9 +57,8 @@ class BeerCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    @objc func pressedAction(_ sender: UIButton) {
+    @objc func pressedAction(_: UIButton) {
         buttonPressed()
-        print("you clicked on button \(sender.tag)")
     }
 
     func configure(beer: Beer) {

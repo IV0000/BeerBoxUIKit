@@ -14,6 +14,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: UIScreen.main.bounds)
         let viewController = UINavigationController(rootViewController: MainViewController())
+
+        // TODO: MOVE SOMEWHERE ELSE
+        if #available(iOS 15, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = Palette.backgroundColor
+            viewController.navigationBar.standardAppearance = appearance
+            viewController.navigationBar.scrollEdgeAppearance = viewController.navigationBar.standardAppearance
+        }
+
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
         window?.windowScene = windowScene

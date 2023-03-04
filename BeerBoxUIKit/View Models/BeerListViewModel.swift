@@ -10,11 +10,12 @@ import UIKit
 
 class BeerListViewModel {
     private(set) var beers: Beers = []
+    var page: Int = 1
 
     func fetchBeers(url: URL) async {
         do {
             let beers = try await Webservice().getBeers(url: url)
-            self.beers = beers
+            self.beers.append(contentsOf: beers /* .sorted(by: { $0.name < $1.name }) */ )
         } catch {
             print(error)
         }
