@@ -48,8 +48,9 @@ class BeerDetailViewController: UIViewController {
         descriptionLabel.font = .systemFont(ofSize: 16)
         descriptionLabel.numberOfLines = 0
 
-        let systemIcon = UIImage(systemName: "bookmark.fill")!
-        systemIcon.withTintColor(Palette.primaryColor, renderingMode: .alwaysOriginal)
+        var systemIcon = UIImage(systemName: "bookmark.fill")!
+        systemIcon = systemIcon.withTintColor(Palette.primaryColor,
+                                              renderingMode: .alwaysOriginal)
         bookmark.image = systemIcon
 
         if let imageUrl = imageUrl {

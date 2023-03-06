@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Beer: Codable {
+struct Beer: Codable, Equatable {
     let id: Int
     let name, tagline, description: String
     let imageURL: String

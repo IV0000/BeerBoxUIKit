@@ -21,6 +21,7 @@
 		FF0D3EA129AFA04600B85A09 /* BeerDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3EA029AFA04600B85A09 /* BeerDetailViewController.swift */; };
 		FF94B84929B37384008D8195 /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF94B84829B37384008D8195 /* BannerView.swift */; };
 		FF94B84C29B38179008D8195 /* ExtensionUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF94B84B29B38179008D8195 /* ExtensionUIView.swift */; };
+		FF94B84E29B63B48008D8195 /* CategoryPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF94B84D29B63B48008D8195 /* CategoryPickerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		FF0D3EA029AFA04600B85A09 /* BeerDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerDetailViewController.swift; sourceTree = "<group>"; };
 		FF94B84829B37384008D8195 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
 		FF94B84B29B38179008D8195 /* ExtensionUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionUIView.swift; sourceTree = "<group>"; };
+		FF94B84D29B63B48008D8195 /* CategoryPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				FF94B84829B37384008D8195 /* BannerView.swift */,
+				FF94B84D29B63B48008D8195 /* CategoryPickerView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -219,6 +222,7 @@
 				FF0D3E8E29AE400A00B85A09 /* Palette.swift in Sources */,
 				FF0D3E9D29AF395C00B85A09 /* BeerCell.swift in Sources */,
 				FF94B84929B37384008D8195 /* BannerView.swift in Sources */,
+				FF94B84E29B63B48008D8195 /* CategoryPickerView.swift in Sources */,
 				FF0D3E7A29AE35AC00B85A09 /* AppDelegate.swift in Sources */,
 				FF0D3E7C29AE35AC00B85A09 /* SceneDelegate.swift in Sources */,
 			);

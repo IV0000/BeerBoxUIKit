@@ -25,37 +25,35 @@ class MainViewController: UIViewController {
          self.titleLabelBox].forEach { titleStackView.addArrangedSubview($0) }
         return titleStackView
     }()
-
-    lazy var categoryButton: UIButton = {
-        let button = UIButton()
-        var config = UIButton.Configuration.filled()
-        return button
-    }()
-
+    
     var xOffset: CGFloat = 10
 
     lazy var categoryButtonsStack: UIStackView = {
-        // TODO: USE DIFFERENT CATEGORIES
-        let typeOfMalts = ["Lager", "2", "Munich", "Pale", "1"]
+        let typeOfMalts = ["Lager", "Pilsner", "Munich", "Pale", "Extra Pale"]
         let stackView = UIStackView()
         stackView.spacing = 8
         for (index, value) in typeOfMalts.enumerated() {
             let button = UIButton()
-            var config = UIButton.Configuration.filled()
-            var container = AttributeContainer()
-            container.font = .systemFont(ofSize: 14)
             button.tag = index
+            button.titleLabel?.font = .systemFont(ofSize: 14)
+            button.setTitle(value, for: .normal)
             if button.tag == 0 {
-                config.baseBackgroundColor = Palette.primaryColor
-                config.baseForegroundColor = Palette.darkTextColor
+                button.backgroundColor = Palette.primaryColor
+                button.setTitleColor(Palette.darkTextColor, for: .normal)
             } else {
-                config.baseBackgroundColor = Palette.searchBarColor
-                config.baseForegroundColor = Palette.textColor
+                button.backgroundColor = Palette.searchBarColor
+                button.setTitleColor(Palette.textColor, for: .normal)
             }
-            config.cornerStyle = .capsule
-            config.attributedTitle = AttributedString("\(value)", attributes: container)
-            button.configuration = config
+            
+            button.layer.cornerRadius = 15
+            button.layer.cornerCurve = .continuous
+
             button.frame = CGRect(x: xOffset, y: 10, width: 70, height: 30)
+            button.contentEdgeInsets = UIEdgeInsets(top: 8,
+                                                    left: 15,
+                                                    bottom: 8,
+                                                    right: 15)
+            button.titleLabel?.centerXAnchor.constraint(equalTo: button.centerXAnchor).isActive = true
             xOffset = xOffset + CGFloat(10) + button.frame.size.width
 
             button.addTarget(self, action: #selector(buttonTapped), for: UIControl.Event.touchUpInside)
@@ -91,12 +89,12 @@ class MainViewController: UIViewController {
     func buttonTapped(sender: UIButton) {
         categoryButtonsStack.subviews.forEach {
             ($0 as? UIButton)?.isSelected = false
-            ($0 as? UIButton)?.configuration?.baseBackgroundColor = Palette.searchBarColor
-            ($0 as? UIButton)?.configuration?.baseForegroundColor = Palette.textColor
+            ($0 as? UIButton)?.backgroundColor = Palette.searchBarColor
+            ($0 as? UIButton)?.setTitleColor(Palette.textColor, for: .normal)
         }
         sender.isSelected = true
-        sender.configuration?.baseBackgroundColor = Palette.bannerColor
-        sender.configuration?.baseForegroundColor = Palette.darkTextColor
+        sender.backgroundColor = Palette.bannerColor
+        sender.setTitleColor(Palette.darkTextColor, for: .normal)
         selectedBeerCategory = (sender.titleLabel?.text)!
         Task {
             print("Debug", selectedBeerCategory)
@@ -134,7 +132,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         Task {
 //            await fetchMaltCategory(categoryName: selectedBeerCategory)
-            await fetchBeers(page: 1)
+            await fetchBeers()
         }
 
         navigationItem.searchController = searchController
@@ -207,8 +205,16 @@ class MainViewController: UIViewController {
         categoryHorizontalScroll.trailingAnchor.constraint(equalTo: bannerView.trailingAnchor).isActive = true
     }
 
-    private func fetchBeers(page: Int) async {
-        await beerViewModel.fetchBeers(url: URL(string: "https://api.punkapi.com/v2/beers?page=\(page)")!)
+    private func fetchMoreBeers(page: Int) async {
+        await beerViewModel.fetchMoreBeers(url: URL(string: "https://api.punkapi.com/v2/beers?page=\(page)")!)
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
+        }
+        print(beerViewModel.beers)
+    }
+
+    private func fetchBeers() async {
+        await beerViewModel.fetchBeers(url: URL(string: "https://api.punkapi.com/v2/beers")!)
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
         }
@@ -237,6 +243,8 @@ class MainViewController: UIViewController {
         }
         print(beerViewModel.beers)
     }
+
+    // MARK: RESET PAGE
 
     func presentBottomSheet(indexPath: IndexPath) {
         let beerDetailVC = BeerDetailViewController()
@@ -269,13 +277,15 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         let count = beerViewModel.beers.count
         if count > 1 {
             let lastElement = count - 1
-            if indexPath.row == lastElement {
+            if indexPath.row == lastElement, !beerViewModel.isLastPage {
                 // call get api for next page
                 beerViewModel.page += 1
                 Task {
-                    await fetchBeers(page: beerViewModel.page)
+                    await fetchMoreBeers(page: beerViewModel.page)
                 }
                 print("FETCHING PAGE NUMBER: ", beerViewModel.page)
+            } else if beerViewModel.isLastPage {
+                beerViewModel.page = 1
             }
         }
 

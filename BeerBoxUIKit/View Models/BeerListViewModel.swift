@@ -11,11 +11,26 @@ import UIKit
 class BeerListViewModel {
     private(set) var beers: Beers = []
     var page: Int = 1
+    var isLastPage: Bool = false
 
     func fetchBeers(url: URL) async {
         do {
             let beers = try await Webservice().getBeers(url: url)
-            self.beers.append(contentsOf: beers /* .sorted(by: { $0.name < $1.name }) */ )
+            self.beers = beers.sorted(by: { $0.name < $1.name })
+
+        } catch {
+            print(error)
+        }
+    }
+
+    func fetchMoreBeers(url: URL) async {
+        do {
+            let beers = try await Webservice().getBeers(url: url)
+            if beers == [] {
+                isLastPage = true
+            }
+            self.beers.append(contentsOf: beers)
+
         } catch {
             print(error)
         }
