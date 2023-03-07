@@ -111,7 +111,6 @@
 			children = (
 				FF0D3E9529AF365C00B85A09 /* MainViewController.swift */,
 				FF0D3EA029AFA04600B85A09 /* BeerDetailViewController.swift */,
-				FF0D3E9C29AF395C00B85A09 /* BeerCell.swift */,
 				FF94B84A29B373A7008D8195 /* Components */,
 			);
 			path = "View Controllers";
@@ -138,6 +137,7 @@
 			children = (
 				FF94B84829B37384008D8195 /* BannerView.swift */,
 				FF94B84D29B63B48008D8195 /* CategoryPickerView.swift */,
+				FF0D3E9C29AF395C00B85A09 /* BeerCell.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";

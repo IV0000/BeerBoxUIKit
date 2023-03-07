@@ -8,10 +8,12 @@
 import Foundation
 import UIKit
 
+// TODO: RENAME TO BEER VIEWMODEL
 class BeerListViewModel {
     private(set) var beers: Beers = []
-    var page: Int = 1
+
     var isLastPage: Bool = false
+    var page: Int = 1
 
     func fetchBeers(url: URL) async {
         do {
@@ -35,6 +37,15 @@ class BeerListViewModel {
             print(error)
         }
     }
+}
+
+let categories = ["Lager", "Pilsner", "Munich", "Pale", "Extra Pale"]
+enum Categories: String, CaseIterable {
+    case lager
+    case pilsner
+    case munich
+    case pale
+    case extraPale
 }
 
 // TODO: REMOVE

@@ -11,122 +11,13 @@ import UIKit
 class MainViewController: UIViewController {
     private let beerViewModel = BeerListViewModel()
     private lazy var bannerView = BannerView()
+    private lazy var categoryPickerView = CategoryPickerView()
+    private lazy var stackBannerAndCategoryView = UIStackView()
+    private lazy var tableView = UITableView()
+    private lazy var logoStackView = UIStackView()
 
-    let searchController = UISearchController(searchResultsController: nil)
+    private let searchController = UISearchController(searchResultsController: nil)
     var selectedBeerCategory = "Lager"
-    var isSearchActive = false
-
-    lazy var titleStackView: UIStackView = {
-        let titleStackView = UIStackView()
-        titleStackView.axis = .horizontal
-        titleStackView.distribution = .fillEqually
-        titleStackView.spacing = 5
-        [self.titleLabelBeer,
-         self.titleLabelBox].forEach { titleStackView.addArrangedSubview($0) }
-        return titleStackView
-    }()
-    
-    var xOffset: CGFloat = 10
-
-    lazy var categoryButtonsStack: UIStackView = {
-        let typeOfMalts = ["Lager", "Pilsner", "Munich", "Pale", "Extra Pale"]
-        let stackView = UIStackView()
-        stackView.spacing = 8
-        for (index, value) in typeOfMalts.enumerated() {
-            let button = UIButton()
-            button.tag = index
-            button.titleLabel?.font = .systemFont(ofSize: 14)
-            button.setTitle(value, for: .normal)
-            if button.tag == 0 {
-                button.backgroundColor = Palette.primaryColor
-                button.setTitleColor(Palette.darkTextColor, for: .normal)
-            } else {
-                button.backgroundColor = Palette.searchBarColor
-                button.setTitleColor(Palette.textColor, for: .normal)
-            }
-            
-            button.layer.cornerRadius = 15
-            button.layer.cornerCurve = .continuous
-
-            button.frame = CGRect(x: xOffset, y: 10, width: 70, height: 30)
-            button.contentEdgeInsets = UIEdgeInsets(top: 8,
-                                                    left: 15,
-                                                    bottom: 8,
-                                                    right: 15)
-            button.titleLabel?.centerXAnchor.constraint(equalTo: button.centerXAnchor).isActive = true
-            xOffset = xOffset + CGFloat(10) + button.frame.size.width
-
-            button.addTarget(self, action: #selector(buttonTapped), for: UIControl.Event.touchUpInside)
-            stackView.addArrangedSubview(button)
-        }
-        return stackView
-    }()
-
-    lazy var categoryHorizontalScroll: UIScrollView = {
-        let scroll = UIScrollView(frame: CGRect(x: 0, y: 120, width: view.bounds.width, height: 70))
-        scroll.showsHorizontalScrollIndicator = false
-        scroll.addSubview(categoryButtonsStack)
-        categoryButtonsStack.translatesAutoresizingMaskIntoConstraints = false
-        categoryButtonsStack.centerYAnchor.constraint(equalTo: scroll.centerYAnchor).isActive = true
-        scroll.contentSize = CGSize(width: xOffset, height: 1.0)
-        return scroll
-    }()
-
-    lazy var stackBannerCategory: UIStackView = {
-        let stack = UIStackView()
-        // TODO: FIX MARGINS
-        stack.layoutMargins = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
-        stack.isLayoutMarginsRelativeArrangement = true
-        stack.axis = .vertical
-        stack.distribution = .equalSpacing
-
-        stack.addArrangedSubview(bannerView)
-        stack.addArrangedSubview(categoryHorizontalScroll)
-        return stack
-    }()
-
-    @objc
-    func buttonTapped(sender: UIButton) {
-        categoryButtonsStack.subviews.forEach {
-            ($0 as? UIButton)?.isSelected = false
-            ($0 as? UIButton)?.backgroundColor = Palette.searchBarColor
-            ($0 as? UIButton)?.setTitleColor(Palette.textColor, for: .normal)
-        }
-        sender.isSelected = true
-        sender.backgroundColor = Palette.bannerColor
-        sender.setTitleColor(Palette.darkTextColor, for: .normal)
-        selectedBeerCategory = (sender.titleLabel?.text)!
-        Task {
-            print("Debug", selectedBeerCategory)
-            await fetchMaltCategory(categoryName: selectedBeerCategory)
-        }
-        tableView.setContentOffset(.zero, animated: true)
-    }
-
-    lazy var titleLabelBeer: UILabel = {
-        let titleLabel = UILabel()
-        titleLabel.text = "Beer"
-        titleLabel.textAlignment = .right
-        titleLabel.textColor = Palette.titleColor
-        titleLabel.font = .systemFont(ofSize: 24, weight: .light)
-        return titleLabel
-    }()
-
-    lazy var titleLabelBox: UILabel = {
-        let titleLable = UILabel()
-        titleLable.text = "Box"
-        titleLable.textAlignment = .left
-        titleLable.textColor = Palette.titleColor
-        titleLable.font = .systemFont(ofSize: 24, weight: .bold)
-        return titleLable
-    }()
-
-    lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(BeerCell.self, forCellReuseIdentifier: "BeerCell")
-        tableView.backgroundColor = .clear
-        return tableView
-    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -135,16 +26,47 @@ class MainViewController: UIViewController {
             await fetchBeers()
         }
 
+        setStyle()
+        setConstraints()
+    }
+
+    private func setStyle() {
+        view.backgroundColor = Palette.backgroundColor
         navigationItem.searchController = searchController
-        navigationItem.titleView = titleStackView
+        navigationItem.titleView = logoStackView
         navigationItem.hidesSearchBarWhenScrolling = false
+
         setupSearchBar()
+
+        logoStackView.axis = .horizontal
+        logoStackView.distribution = .fillEqually
+        logoStackView.spacing = 5
+        let logoLabel = [setupLogoLabel(label: "Beer", weight: .light, alignmenent: .left),
+                         setupLogoLabel(label: "Box", weight: .bold, alignmenent: .right)]
+        logoLabel.forEach { logoStackView.addArrangedSubview($0) }
+
+        stackBannerAndCategoryView.layoutMargins = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+        stackBannerAndCategoryView.isLayoutMarginsRelativeArrangement = true
+        stackBannerAndCategoryView.axis = .vertical
+        stackBannerAndCategoryView.distribution = .equalSpacing
+
+        setupTableView()
+    }
+
+    private func setupLogoLabel(label: String, weight: UIFont.Weight, alignmenent: NSTextAlignment) -> UILabel {
+        let titleLabel = UILabel()
+        titleLabel.text = label
+        titleLabel.textAlignment = alignmenent
+        titleLabel.textColor = Palette.titleColor
+        titleLabel.font = .systemFont(ofSize: 24, weight: weight)
+        return titleLabel
+    }
+
+    private func setupTableView() {
+        tableView.register(BeerCell.self, forCellReuseIdentifier: "BeerCell")
+        tableView.backgroundColor = .clear
         tableView.delegate = self
         tableView.dataSource = self
-        view.backgroundColor = Palette.backgroundColor
-        view.addSubview(tableView)
-        view.addSubview(stackBannerCategory)
-        setupConstraints()
     }
 
     private func setupSearchBar() {
@@ -175,34 +97,26 @@ class MainViewController: UIViewController {
                 searchIcon.tintColor = Palette.textColor
             }
         }
-
         searchController.searchResultsUpdater = self
     }
 
-    private func setupConstraints() {
-        stackBannerCategory.translatesAutoresizingMaskIntoConstraints = false
-        stackBannerCategory.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        stackBannerCategory.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        stackBannerCategory.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+    private func setConstraints() {
+        view.addConstrainedSubview(tableView, stackBannerAndCategoryView)
 
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        tableView.topAnchor.constraint(equalTo: stackBannerCategory.bottomAnchor, constant: 10).isActive = true
+        stackBannerAndCategoryView.addArrangedSubview(bannerView)
+        stackBannerAndCategoryView.addArrangedSubview(categoryPickerView)
 
-        bannerView.translatesAutoresizingMaskIntoConstraints = false
-        bannerView.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        bannerView.topAnchor.constraint(equalTo: stackBannerCategory.topAnchor).isActive = true
-//        bannerView.leadingAnchor.constraint(equalTo: stackBannerCategory.leadingAnchor, constant: 15).isActive = true
-//        bannerView.trailingAnchor.constraint(equalTo: stackBannerCategory.trailingAnchor, constant: -15).isActive = true
+        NSLayoutConstraint.activate([
+            bannerView.heightAnchor.constraint(equalToConstant: 70),
+            stackBannerAndCategoryView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            stackBannerAndCategoryView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            stackBannerAndCategoryView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
-        categoryHorizontalScroll.translatesAutoresizingMaskIntoConstraints = false
-        categoryHorizontalScroll.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        categoryHorizontalScroll.widthAnchor.constraint(equalTo: bannerView.widthAnchor).isActive = true
-        categoryHorizontalScroll.topAnchor.constraint(equalTo: bannerView.bottomAnchor).isActive = true
-        categoryHorizontalScroll.leadingAnchor.constraint(equalTo: bannerView.leadingAnchor).isActive = true
-        categoryHorizontalScroll.trailingAnchor.constraint(equalTo: bannerView.trailingAnchor).isActive = true
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.topAnchor.constraint(equalTo: stackBannerAndCategoryView.bottomAnchor, constant: 5)
+        ])
     }
 
     private func fetchMoreBeers(page: Int) async {
@@ -258,7 +172,7 @@ class MainViewController: UIViewController {
             sheet.detents = [
                 .custom { context in
                     context.maximumDetentValue * 0.45
-                },
+                }
             ]
             sheet.preferredCornerRadius = 18
         }
@@ -333,8 +247,8 @@ extension MainViewController: UISearchResultsUpdating, UISearchBarDelegate {
     /* Hide banner and category on search */
     func searchBarTextDidBeginEditing(_: UISearchBar) {
         UIView.animate(withDuration: 0.2, animations: {
-            self.categoryHorizontalScroll.isHidden = true
-            self.categoryHorizontalScroll.alpha = 0
+            self.categoryPickerView.isHidden = true
+            self.categoryPickerView.alpha = 0
             self.bannerView.isHidden = true
             self.bannerView.alpha = 0
         })
@@ -342,8 +256,8 @@ extension MainViewController: UISearchResultsUpdating, UISearchBarDelegate {
 
     func searchBarCancelButtonClicked(_: UISearchBar) {
         UIView.animate(withDuration: 0.2, animations: {
-            self.categoryHorizontalScroll.isHidden = false
-            self.categoryHorizontalScroll.alpha = 1
+            self.categoryPickerView.isHidden = false
+            self.categoryPickerView.alpha = 1
             self.bannerView.isHidden = false
             self.bannerView.alpha = 1
         })
