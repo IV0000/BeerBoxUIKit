@@ -8,11 +8,9 @@
 import UIKit
 
 class CategoryPickerView: UIView {
-    private let categoryButtonsStack = UIStackView()
     private let categoryHorizontalScroll = UIScrollView()
-
-    var selectCategory: (() -> Void) = {}
-
+    var categoryButtonsStack = UIStackView()
+    var selectCategoryClosure: ((_ button: UIButton) -> Void) = { _ in }
     var buttonOffsetX: CGFloat = 10
 
     override init(frame: CGRect) {
@@ -22,7 +20,12 @@ class CategoryPickerView: UIView {
         setStyle()
     }
 
-    func setStyle() {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setStyle() {
         categoryButtonsStack.spacing = 8
         setScrollbarStyle()
     }
@@ -33,7 +36,7 @@ class CategoryPickerView: UIView {
         categoryHorizontalScroll.contentSize = CGSize(width: buttonOffsetX, height: 1.0)
     }
 
-    func categoryButton(label: String, index: Int) -> UIButton {
+    private func categoryButton(label: String, index: Int) -> UIButton {
         let categoryButton = UIButton()
         categoryButton.setTitle(label.capitalized, for: .normal)
         categoryButton.titleLabel?.font = .systemFont(ofSize: 14)
@@ -58,11 +61,14 @@ class CategoryPickerView: UIView {
         return categoryButton
     }
 
-    func listOfButtons() -> [UIButton] {
+    private func listOfButtons() -> [UIButton] {
         var listOfButtons: [UIButton] = []
-        for (index, value) in Categories.allCases.enumerated() {
-            let button = categoryButton(label: value.rawValue, index: index)
-//            button.addTarget(self, action: #selector(selectCategory), for: UIControl.Event.touchUpInside)
+        for (index, value) in BeerCategories.allCases.enumerated() {
+            let button = categoryButton(label: value.label, index: index)
+            button.addAction(UIAction(handler: { _ in
+                self.selectCategoryClosure(button)
+            }), for: .touchUpInside)
+
             listOfButtons.append(button)
         }
         return listOfButtons
@@ -73,31 +79,22 @@ class CategoryPickerView: UIView {
         categoryHorizontalScroll.addConstrainedSubview(categoryButtonsStack)
         addSubview(categoryHorizontalScroll)
 
-        heightAnchor.constraint(equalToConstant: 70).isActive = true
-        categoryButtonsStack.centerYAnchor.constraint(equalTo: categoryHorizontalScroll.centerYAnchor).isActive = true
+        NSLayoutConstraint.activate([
+            heightAnchor.constraint(equalToConstant: 70),
+            categoryButtonsStack.centerYAnchor.constraint(equalTo: categoryHorizontalScroll.centerYAnchor)
+        ])
     }
 
-//
-//    @objc
-//    func selectCategory(sender: UIButton) {
-//        categoryButtonsStack.subviews.forEach {
-//            ($0 as? UIButton)?.isSelected = false
-//            ($0 as? UIButton)?.backgroundColor = Palette.searchBarColor
-//            ($0 as? UIButton)?.setTitleColor(Palette.textColor, for: .normal)
-//        }
-//        sender.isSelected = true
-//        sender.backgroundColor = Palette.bannerColor
-//        sender.setTitleColor(Palette.darkTextColor, for: .normal)
-//        selectedBeerCategory = (sender.titleLabel?.text)!
-//        Task {
-//            print("Debug", selectedBeerCategory)
-//            await fetchMaltCategory(categoryName: selectedBeerCategory)
-//        }
-//        tableView.setContentOffset(.zero, animated: true)
-//    }
+    func addSelectCategoryButtonTarget(_ target: Any?, action: Selector) {
+        for (index, button) in listOfButtons().enumerated() {
+            button.tag = index
+            button.addTarget(target, action: action, for: .touchUpInside)
+        }
 
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        categoryButtonsStack.subviews.forEach {
+            ($0 as? UIButton)?.isSelected = false
+            ($0 as? UIButton)?.backgroundColor = Palette.searchBarColor
+            ($0 as? UIButton)?.setTitleColor(Palette.textColor, for: .normal)
+        }
     }
 }

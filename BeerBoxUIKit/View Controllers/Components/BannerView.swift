@@ -54,7 +54,7 @@ class BannerView: UIView {
             bannerDescriptionLabel.leadingAnchor.constraint(equalTo: bannerTitleLabel.leadingAnchor),
 
             bannerImage.centerYAnchor.constraint(equalTo: centerYAnchor),
-            bannerImage.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
+            bannerImage.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15)
         ])
     }
 }

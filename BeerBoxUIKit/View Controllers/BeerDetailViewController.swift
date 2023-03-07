@@ -86,7 +86,7 @@ class BeerDetailViewController: UIViewController {
 
             descriptionLabel.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.7),
             descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            descriptionLabel.topAnchor.constraint(equalTo: taglineLabel.bottomAnchor, constant: 10),
+            descriptionLabel.topAnchor.constraint(equalTo: taglineLabel.bottomAnchor, constant: 10)
         ])
     }
 }

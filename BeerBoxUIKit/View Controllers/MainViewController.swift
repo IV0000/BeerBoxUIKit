@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class MainViewController: UIViewController {
-    private let beerViewModel = BeerListViewModel()
+    private let beerViewModel = BeerViewModel()
     private lazy var bannerView = BannerView()
     private lazy var categoryPickerView = CategoryPickerView()
     private lazy var stackBannerAndCategoryView = UIStackView()
@@ -17,24 +17,28 @@ class MainViewController: UIViewController {
     private lazy var logoStackView = UIStackView()
 
     private let searchController = UISearchController(searchResultsController: nil)
-    var selectedBeerCategory = "Lager"
+    private var selectedBeerCategory = BeerCategories.lager.label
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        Task {
-//            await fetchMaltCategory(categoryName: selectedBeerCategory)
-            await fetchBeers()
-        }
 
         setStyle()
         setConstraints()
+
+        Task {
+            await fetchMaltCategory(categoryName: selectedBeerCategory)
+        }
     }
+
+    // MARK: - UI STYLE
 
     private func setStyle() {
         view.backgroundColor = Palette.backgroundColor
         navigationItem.searchController = searchController
         navigationItem.titleView = logoStackView
         navigationItem.hidesSearchBarWhenScrolling = false
+
+        categoryPickerView.selectCategoryClosure = { self.selectCategory(button: $0) }
 
         setupSearchBar()
 
@@ -119,48 +123,34 @@ class MainViewController: UIViewController {
         ])
     }
 
+    // MARK: - FUNCTIONS
+
     private func fetchMoreBeers(page: Int) async {
-        await beerViewModel.fetchMoreBeers(url: URL(string: "https://api.punkapi.com/v2/beers?page=\(page)")!)
+        await beerViewModel.fetchBeers(url: URL(string: "https://api.punkapi.com/v2/beers?page=\(page)")!)
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
         }
         print(beerViewModel.beers)
     }
 
-    private func fetchBeers() async {
-        await beerViewModel.fetchBeers(url: URL(string: "https://api.punkapi.com/v2/beers")!)
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView.reloadData()
+    private func selectCategory(button: UIButton) {
+        categoryPickerView.categoryButtonsStack.subviews.forEach {
+            ($0 as? UIButton)?.isSelected = false
+            ($0 as? UIButton)?.backgroundColor = Palette.searchBarColor
+            ($0 as? UIButton)?.setTitleColor(Palette.textColor, for: .normal)
         }
-        print(beerViewModel.beers)
+        button.isSelected = true
+        button.backgroundColor = Palette.bannerColor
+        button.setTitleColor(Palette.darkTextColor, for: .normal)
+        selectedBeerCategory = (button.titleLabel?.text)!
+        tableView.setContentOffset(.zero, animated: true)
+        selectedBeerCategory = selectedBeerCategory.replacingOccurrences(of: " ", with: "")
+        Task {
+            await fetchMaltCategory(categoryName: selectedBeerCategory)
+        }
     }
 
-    private func fetchMaltCategory(categoryName: String) async {
-        guard let url = URL(string: "https://api.punkapi.com/v2/beers?malt=\(categoryName)") else {
-            return
-        }
-        await beerViewModel.fetchBeers(url: url)
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView.reloadData()
-        }
-        print(beerViewModel.beers)
-    }
-
-    private func searchBeer(beerName: String) async {
-        guard let url = URL(string: "https://api.punkapi.com/v2/beers?beer_name=\(beerName)") else {
-            return
-        }
-
-        await beerViewModel.fetchBeers(url: url)
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView.reloadData()
-        }
-        print(beerViewModel.beers)
-    }
-
-    // MARK: RESET PAGE
-
-    func presentBottomSheet(indexPath: IndexPath) {
+    private func presentBottomSheet(indexPath: IndexPath) {
         let beerDetailVC = BeerDetailViewController()
         beerDetailVC.sheetPresentationController?.delegate = self
         beerDetailVC.titleDetail = beerViewModel.beers[indexPath.row].name
@@ -180,6 +170,28 @@ class MainViewController: UIViewController {
         navigationController?.navigationBar.alpha = 0.5
         present(beerDetailVC, animated: true, completion: nil)
     }
+
+    private func fetchMaltCategory(categoryName: String) async {
+        guard let url = URL(string: "https://api.punkapi.com/v2/beers?malt=\(categoryName)") else {
+            return
+        }
+        beerViewModel.cleanData = true
+        await beerViewModel.fetchBeers(url: url)
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
+        }
+    }
+
+    private func searchBeer(beerName: String) async {
+        guard let url = URL(string: "https://api.punkapi.com/v2/beers?beer_name=\(beerName)") else {
+            return
+        }
+        beerViewModel.cleanData = true
+        await beerViewModel.fetchBeers(url: url)
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
+        }
+    }
 }
 
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
@@ -192,12 +204,10 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         if count > 1 {
             let lastElement = count - 1
             if indexPath.row == lastElement, !beerViewModel.isLastPage {
-                // call get api for next page
                 beerViewModel.page += 1
                 Task {
                     await fetchMoreBeers(page: beerViewModel.page)
                 }
-                print("FETCHING PAGE NUMBER: ", beerViewModel.page)
             } else if beerViewModel.isLastPage {
                 beerViewModel.page = 1
             }
@@ -216,7 +226,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
-        return 130
+        130
     }
 }
 
@@ -233,13 +243,14 @@ extension MainViewController: UISearchResultsUpdating, UISearchBarDelegate {
             tableView.setContentOffset(.zero, animated: true)
         }
 
-        guard let query = searchController.searchBar.text else {
+        guard var query = searchController.searchBar.text else {
             return
         }
 
         if !query.isEmpty {
+            query = query.replacingOccurrences(of: " ", with: "%20")
             Task {
-                await searchBeer(beerName: query.trimmingCharacters(in: .whitespaces))
+                await searchBeer(beerName: query)
             }
         }
     }

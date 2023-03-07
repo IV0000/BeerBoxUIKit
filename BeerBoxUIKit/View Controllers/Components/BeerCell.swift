@@ -81,7 +81,7 @@ class BeerCell: UITableViewCell {
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -15),
 
             moreInfoButton.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            moreInfoButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: -5),
+            moreInfoButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: -5)
         ])
     }
 }
@@ -93,7 +93,7 @@ struct BeerCellRepresentable: UIViewRepresentable {
         let mockBeer = Beer(id: 1,
                             name: "Punk Ipa",
                             tagline: "Lorem Ipsum",
-                            description: "2008 Prototype beer, a 4.7% wheat ale with crushed juniper berries and citrus peel.",
+                            description: "2008 Prototype beer, a 4.7% wheat ale with crushed juniper",
                             imageURL: "https://images.punkapi.com/v2/25.png")
 
         let cell = BeerCell(style: .default, reuseIdentifier: "BeerCell")

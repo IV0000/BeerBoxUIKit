@@ -14,7 +14,7 @@
 		FF0D3E8E29AE400A00B85A09 /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E8D29AE400A00B85A09 /* Palette.swift */; };
 		FF0D3E9029AE464800B85A09 /* Beer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E8F29AE464800B85A09 /* Beer.swift */; };
 		FF0D3E9229AF33B500B85A09 /* Webservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E9129AF33B500B85A09 /* Webservice.swift */; };
-		FF0D3E9429AF34AD00B85A09 /* BeerListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E9329AF34AD00B85A09 /* BeerListViewModel.swift */; };
+		FF0D3E9429AF34AD00B85A09 /* BeerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E9329AF34AD00B85A09 /* BeerViewModel.swift */; };
 		FF0D3E9629AF365C00B85A09 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E9529AF365C00B85A09 /* MainViewController.swift */; };
 		FF0D3E9D29AF395C00B85A09 /* BeerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E9C29AF395C00B85A09 /* BeerCell.swift */; };
 		FF0D3E9F29AF508300B85A09 /* ExtensionUIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0D3E9E29AF508300B85A09 /* ExtensionUIImage.swift */; };
@@ -34,7 +34,7 @@
 		FF0D3E8D29AE400A00B85A09 /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
 		FF0D3E8F29AE464800B85A09 /* Beer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Beer.swift; sourceTree = "<group>"; };
 		FF0D3E9129AF33B500B85A09 /* Webservice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Webservice.swift; sourceTree = "<group>"; };
-		FF0D3E9329AF34AD00B85A09 /* BeerListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerListViewModel.swift; sourceTree = "<group>"; };
+		FF0D3E9329AF34AD00B85A09 /* BeerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerViewModel.swift; sourceTree = "<group>"; };
 		FF0D3E9529AF365C00B85A09 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		FF0D3E9C29AF395C00B85A09 /* BeerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerCell.swift; sourceTree = "<group>"; };
 		FF0D3E9E29AF508300B85A09 /* ExtensionUIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionUIImage.swift; sourceTree = "<group>"; };
@@ -127,7 +127,7 @@
 		FF0D3E9B29AF36CF00B85A09 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
-				FF0D3E9329AF34AD00B85A09 /* BeerListViewModel.swift */,
+				FF0D3E9329AF34AD00B85A09 /* BeerViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -212,7 +212,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FF0D3E9429AF34AD00B85A09 /* BeerListViewModel.swift in Sources */,
+				FF0D3E9429AF34AD00B85A09 /* BeerViewModel.swift in Sources */,
 				FF0D3E9029AE464800B85A09 /* Beer.swift in Sources */,
 				FF0D3E9229AF33B500B85A09 /* Webservice.swift in Sources */,
 				FF0D3E9629AF365C00B85A09 /* MainViewController.swift in Sources */,
