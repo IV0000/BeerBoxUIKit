@@ -130,7 +130,6 @@ class MainViewController: UIViewController {
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
         }
-        print(beerViewModel.beers)
     }
 
     private func selectCategory(button: UIButton) {
